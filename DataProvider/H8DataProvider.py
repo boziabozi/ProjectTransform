@@ -32,8 +32,10 @@ class H8Dataprovider(DataProvider):
             self.__BandWaveLenthList=None
 
         # del self.__AuxiliaryDataNamesList
-        for filehandle in self.__HdfFileHandleList:
-            self.__HdfFileHandleList[filehandle].close()
+        for filehandleName in self.__HdfFileHandleList:
+            filehandle = self.__HdfFileHandleList[filehandleName]
+            if filehandle.id.valid:
+                filehandle.close()
 
         self.__HdfFileHandleList.clear()
 
@@ -131,44 +133,115 @@ class H8Dataprovider(DataProvider):
         # self.__description=self.OrbitInfo.Sat+'_'+self.OrbitInfo.Sensor+'_'+self.OrbitInfo.Date+'_'+self.OrbitInfo.Time
 
 
-    def SetAuxiliaryDataFile(self,LNDfile,LMKfile,DEMfile,COASTfile,SATZENfile,SATAZIfile,Lonfile,LatFile):
+    def SetAuxiliaryDataFile(self,LNDfile,LMKfile,DEMfile,COASTfile,SATZENfile,SATAZIfile,Lonfile,LatFile,SolarZenfile,solarAZIfile,Pixel_DataSets):
 
         if LNDfile!='NULL':
-            self.__HdfFileHandleList['LandCover'] = self.__HdfOperator.Open(LNDfile)
-            self.__AuxiliaryDataNamesList['LandCover'] = 'LandCover'
+          #  self.__HdfFileHandleList['LandCover'] = self.__HdfOperator.Open(LNDfile)
+          #  self.__AuxiliaryDataNamesList['LandCover'] = 'LandCover'
+            self.__HdfFileHandleList['LandCover'] = self.__HdfOperator.Open(LNDfile['FilePath'])
+            self.__AuxiliaryDataNamesList['LandCover'] = LNDfile['Name']
         if LMKfile!='NULL':
-            self.__HdfFileHandleList['LandSeaMask'] = self.__HdfOperator.Open(LMKfile)
-            self.__AuxiliaryDataNamesList['LandSeaMask'] = 'LandSeaMask'
+          #  self.__HdfFileHandleList['LandSeaMask'] = self.__HdfOperator.Open(LMKfile)
+          #  self.__AuxiliaryDataNamesList['LandSeaMask'] = 'LandSeaMask'
+            self.__HdfFileHandleList['LandSeaMask'] = self.__HdfOperator.Open(LMKfile['FilePath'])
+            self.__AuxiliaryDataNamesList['LandSeaMask'] = LMKfile['Name']
         if DEMfile!='NULL':
-            self.__HdfFileHandleList['DEM'] = self.__HdfOperator.Open(DEMfile)
-            self.__AuxiliaryDataNamesList['DEM'] = 'DEM'
+          #  self.__HdfFileHandleList['DEM'] = self.__HdfOperator.Open(DEMfile)
+          #  self.__AuxiliaryDataNamesList['DEM'] = 'DEM'
+            self.__HdfFileHandleList['DEM'] = self.__HdfOperator.Open(DEMfile['FilePath'])
+            self.__AuxiliaryDataNamesList['DEM'] = DEMfile['Name']
         if COASTfile!='NULL':
-            self.__HdfFileHandleList['SeaCoast']= self.__HdfOperator.Open(COASTfile)
-            self.__AuxiliaryDataNamesList['SeaCoast'] = 'SeaCoast'
+          #  self.__HdfFileHandleList['SeaCoast']= self.__HdfOperator.Open(COASTfile)
+          #  self.__AuxiliaryDataNamesList['SeaCoast'] = 'SeaCoast'
+            self.__HdfFileHandleList['SeaCoast']= self.__HdfOperator.Open(COASTfile['FilePath'])
+            self.__AuxiliaryDataNamesList['SeaCoast'] = COASTfile['Name']
         if SATZENfile!='NULL':
-            self.__HdfFileHandleList['SensorZenith']= self.__HdfOperator.Open(SATZENfile)
-            self.__AuxiliaryDataNamesList['SensorZenith'] = 'SatZenith'
+          #  self.__HdfFileHandleList['SensorZenith']= self.__HdfOperator.Open(SATZENfile)
+          #  #self.__AuxiliaryDataNamesList['SensorZenith'] = 'SatZenith' 									#2016_10_13
+          #  self.__AuxiliaryDataNamesList['SensorZenith'] = 'pixel_satellite_zenith_angle'#2016_10_13
+            self.__HdfFileHandleList['SensorZenith']= self.__HdfOperator.Open(SATZENfile['FilePath'])
+            self.__AuxiliaryDataNamesList['SensorZenith'] = SATZENfile['Name']
         if SATAZIfile!='NULL':
-            self.__HdfFileHandleList['SensorAzimuth']= self.__HdfOperator.Open(SATAZIfile)
-            self.__AuxiliaryDataNamesList['SensorAzimuth'] = 'SatAzimuth'
+          #  self.__HdfFileHandleList['SensorAzimuth']= self.__HdfOperator.Open(SATAZIfile)
+          #  #self.__AuxiliaryDataNamesList['SensorAzimuth'] = 'SatAzimuth'									#2016_10_13
+          #  self.__AuxiliaryDataNamesList['SensorAzimuth'] = 'pixel_satellite_azimuth_angle'#2016_10_13
+            self.__HdfFileHandleList['SensorAzimuth']= self.__HdfOperator.Open(SATAZIfile['FilePath'])
+            self.__AuxiliaryDataNamesList['SensorAzimuth'] = SATAZIfile['Name']
         if Lonfile != 'NULL':
             self.__AuxiliaryDataNamesList['Longitude'] = 'Lon'
         if LatFile != 'NULL':
             self.__AuxiliaryDataNamesList['Latitude'] = 'Lat'
+        if SolarZenfile != 'NULL':
+            self.__AuxiliaryDataNamesList['SunZenith'] = 'NOMSunZenith'
+            filehandle = self.__HdfFileHandleList['L1']
+            self.__HdfFileHandleList['SunZenith'] = filehandle
+        if solarAZIfile != 'NULL':
+            self.__AuxiliaryDataNamesList['SunAzimuth'] = 'NOMSunAzimuth'
+            filehandle = self.__HdfFileHandleList['L1']
+            self.__HdfFileHandleList['SunAzimuth'] = filehandle
+            
+       	if Pixel_DataSets != 'NULL':		# Datasets in the same file.  2016.9.30
+          #  self.__HdfFileHandleList['pixel_desert_mask'] = self.__HdfOperator.Open(Pixel_DataSets)
+          #  self.__AuxiliaryDataNamesList['pixel_desert_mask'] = 'pixel_desert_mask'
+
+          #  self.__HdfFileHandleList['pixel_ecosystem_type'] = self.__HdfOperator.Open(Pixel_DataSets)
+          #  self.__AuxiliaryDataNamesList['pixel_ecosystem_type'] = 'pixel_ecosystem_type'
+
+          #  self.__HdfFileHandleList['pixel_snow_mask'] = self.__HdfOperator.Open(Pixel_DataSets)
+          #  self.__AuxiliaryDataNamesList['pixel_snow_mask'] = 'pixel_snow_mask'
+
+          #  self.__HdfFileHandleList['pixel_surface_elevation'] = self.__HdfOperator.Open(Pixel_DataSets)
+          #  self.__AuxiliaryDataNamesList['pixel_surface_elevation'] = 'pixel_surface_elevation'
+
+          #  self.__HdfFileHandleList['pixel_surface_type'] = self.__HdfOperator.Open(Pixel_DataSets)
+          #  self.__AuxiliaryDataNamesList['pixel_surface_type'] = 'pixel_surface_type'
+
+          #  self.__HdfFileHandleList['pixel_volcano_mask'] = self.__HdfOperator.Open(Pixel_DataSets)
+          #  self.__AuxiliaryDataNamesList['pixel_volcano_mask'] = 'pixel_volcano_mask'
+
+          #  self.__HdfFileHandleList['pixel_land_mask'] = self.__HdfOperator.Open(Pixel_DataSets)
+          #  self.__AuxiliaryDataNamesList['pixel_land_mask'] = 'pixel_land_mask'
+
+          #  self.__HdfFileHandleList['pixel_coast_mask'] = self.__HdfOperator.Open(Pixel_DataSets)
+          #  self.__AuxiliaryDataNamesList['pixel_coast_mask'] = 'pixel_coast_mask'
+          
+            self.__HdfFileHandleList['pixel_desert_mask'] = self.__HdfOperator.Open(Pixel_DataSets['FilePath'])
+            self.__AuxiliaryDataNamesList['pixel_desert_mask'] = Pixel_DataSets['Name_pixel_desert_mask']
+
+            self.__HdfFileHandleList['pixel_ecosystem_type'] = self.__HdfOperator.Open(Pixel_DataSets['FilePath'])
+            self.__AuxiliaryDataNamesList['pixel_ecosystem_type'] = Pixel_DataSets['Name_pixel_ecosystem_type']
+
+            self.__HdfFileHandleList['pixel_snow_mask'] = self.__HdfOperator.Open(Pixel_DataSets['FilePath'])
+            self.__AuxiliaryDataNamesList['pixel_snow_mask'] = Pixel_DataSets['Name_pixel_snow_mask']
+
+            self.__HdfFileHandleList['pixel_surface_elevation'] = self.__HdfOperator.Open(Pixel_DataSets['FilePath'])
+            self.__AuxiliaryDataNamesList['pixel_surface_elevation'] = Pixel_DataSets['Name_pixel_surface_elevation']
+
+            self.__HdfFileHandleList['pixel_surface_type'] = self.__HdfOperator.Open(Pixel_DataSets['FilePath'])
+            self.__AuxiliaryDataNamesList['pixel_surface_type'] = Pixel_DataSets['Name_pixel_surface_type']
+
+            self.__HdfFileHandleList['pixel_volcano_mask'] = self.__HdfOperator.Open(Pixel_DataSets['FilePath'])
+            self.__AuxiliaryDataNamesList['pixel_volcano_mask'] = Pixel_DataSets['Name_pixel_volcano_mask']
+
+            self.__HdfFileHandleList['pixel_land_mask'] = self.__HdfOperator.Open(Pixel_DataSets['FilePath'])
+            self.__AuxiliaryDataNamesList['pixel_land_mask'] = Pixel_DataSets['Name_pixel_land_mask']
+
+            self.__HdfFileHandleList['pixel_coast_mask'] = self.__HdfOperator.Open(Pixel_DataSets['FilePath'])
+            self.__AuxiliaryDataNamesList['pixel_coast_mask'] = Pixel_DataSets['Name_pixel_coast_mask']
 
         return
 
 
     def CreateBandsInfo(self):
 
-        index  = 1
+        # index  = 1
         for wavelength in self.__BandWaveLenthList:
-            self.OrbitInfo.BandsWavelength['EVB'+str(index)] = wavelength
+            self.OrbitInfo.BandsWavelength['EVB'+str(wavelength)] = wavelength
             if int(wavelength)>230:
-                self.OrbitInfo.BandsType['EVB'+str(index)] = 'EMIS'
+                self.OrbitInfo.BandsType['EVB'+str(wavelength)] = 'EMIS'
             else:
-                self.OrbitInfo.BandsType['EVB'+str(index)] = 'REF'
-            index = index+1
+                self.OrbitInfo.BandsType['EVB'+str(wavelength)] = 'REF'
+            # index = index+1
 
 
     def GetLongitude(self):
